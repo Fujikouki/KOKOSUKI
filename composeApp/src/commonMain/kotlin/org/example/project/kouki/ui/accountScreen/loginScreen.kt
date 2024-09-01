@@ -16,9 +16,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-
 @Composable
-fun AccountCreatingScreen(paddingValues: PaddingValues, onClick: () -> Unit) {
+fun LoginScreen(paddingValues: PaddingValues, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .padding(paddingValues)
@@ -28,28 +27,9 @@ fun AccountCreatingScreen(paddingValues: PaddingValues, onClick: () -> Unit) {
         Text(
             modifier = Modifier
                 .fillMaxWidth(),
-            text = "アカウント作成",
+            text = "ログイン",
             textAlign = TextAlign.Center,
             fontSize = 24.sp
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            modifier = Modifier
-                .fillMaxWidth(),
-            text = "名前",
-            textAlign = TextAlign.Center,
-            fontSize = 24.sp
-        )
-
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            value = "",
-            onValueChange = {},
-            label = { Text("名前") }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -71,6 +51,8 @@ fun AccountCreatingScreen(paddingValues: PaddingValues, onClick: () -> Unit) {
             label = { Text("メールアドレス") }
         )
 
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -88,24 +70,6 @@ fun AccountCreatingScreen(paddingValues: PaddingValues, onClick: () -> Unit) {
             label = { Text("パスワード") }
         )
 
-        Text(
-            modifier = Modifier
-                .fillMaxWidth(),
-            text = "IconURL",
-            textAlign = TextAlign.Center,
-            fontSize = 24.sp
-        )
-
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            value = "",
-            onValueChange = {},
-            label = { Text("IconURL") }
-        )
-
-
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
@@ -113,16 +77,14 @@ fun AccountCreatingScreen(paddingValues: PaddingValues, onClick: () -> Unit) {
                 .fillMaxWidth()
                 .padding(8.dp),
             onClick = { /*TODO*/ }) {
-            Text(text = "アカウント作成")
+            Text(text = "ログイン")
         }
         Button(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
             onClick = { onClick() }) {
-            Text(text = "ログイン")
+            Text(text = "新規登録")
         }
-
     }
-
 }
