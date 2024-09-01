@@ -9,6 +9,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.runBlocking
+import org.example.project.kouki.network.AccountApi
 import org.example.project.kouki.ui.accountScreen.AccountCreatingScreen
 import org.example.project.kouki.ui.accountScreen.LoginScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -18,6 +20,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun App() {
 
     var flag by remember { mutableStateOf(false) }
+
+    val api by remember { mutableStateOf(AccountApi()) }
 
     MaterialTheme {
         Scaffold(
@@ -33,7 +37,12 @@ fun App() {
             }
         ) { paddingValues ->
             if (flag) {
-                AccountCreatingScreen(paddingValues) {
+                AccountCreatingScreen(paddingValues, onLogUpButton = {
+                    runBlocking {
+                        println(it)
+                        api.createAccount(it)
+                    }
+                }) {
                     flag = false
                 }
             } else {

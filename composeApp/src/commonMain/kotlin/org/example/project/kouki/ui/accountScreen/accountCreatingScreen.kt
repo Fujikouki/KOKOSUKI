@@ -11,14 +11,32 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.example.project.kouki.network.data.CreateAccount
 
 
 @Composable
-fun AccountCreatingScreen(paddingValues: PaddingValues, onClick: () -> Unit) {
+fun AccountCreatingScreen(
+    paddingValues: PaddingValues,
+    onLogUpButton: (CreateAccount) -> Unit,
+    onClick: () -> Unit
+) {
+
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var iconUrl by remember { mutableStateOf("") }
+
+
+
+
     Column(
         modifier = Modifier
             .padding(paddingValues)
@@ -47,8 +65,8 @@ fun AccountCreatingScreen(paddingValues: PaddingValues, onClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            value = "",
-            onValueChange = {},
+            value = name,
+            onValueChange = { name = it },
             label = { Text("名前") }
         )
 
@@ -66,8 +84,8 @@ fun AccountCreatingScreen(paddingValues: PaddingValues, onClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            value = "",
-            onValueChange = {},
+            value = email,
+            onValueChange = { email = it },
             label = { Text("メールアドレス") }
         )
 
@@ -83,8 +101,8 @@ fun AccountCreatingScreen(paddingValues: PaddingValues, onClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            value = "",
-            onValueChange = {},
+            value = password,
+            onValueChange = { password = it },
             label = { Text("パスワード") }
         )
 
@@ -100,8 +118,8 @@ fun AccountCreatingScreen(paddingValues: PaddingValues, onClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            value = "",
-            onValueChange = {},
+            value = iconUrl,
+            onValueChange = { iconUrl = it },
             label = { Text("IconURL") }
         )
 
@@ -112,7 +130,7 @@ fun AccountCreatingScreen(paddingValues: PaddingValues, onClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            onClick = { /*TODO*/ }) {
+            onClick = { onLogUpButton(CreateAccount(name, iconUrl, password, name)) }) {
             Text(text = "アカウント作成")
         }
         Button(
