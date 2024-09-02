@@ -13,6 +13,7 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.example.project.kouki.network.data.CreateAccount
+import org.example.project.kouki.network.data.Login
 
 
 class AccountApi {
@@ -41,6 +42,26 @@ class AccountApi {
                 client.post("http://192.168.11.4:8080/account/create") {
                 contentType(io.ktor.http.ContentType.Application.Json)
                 setBody(userRequest)
+                }
+            response.headers.get("Set-Cookie")
+        }
+        result.onSuccess { response ->
+            println("Response: $response")
+        }.onFailure { exception ->
+            println("Error occurred: ${exception.message}")
+        }
+    }
+
+    suspend fun logIn(login: Login) {
+        val result = runCatching {
+            // 送信するデータの準備
+            val logInRequest = login
+            // POSTリクエストの送信
+            //localhostの場合
+            val response =
+                client.post("http://192.168.11.4:8080/account/login") {
+                    contentType(io.ktor.http.ContentType.Application.Json)
+                    setBody(logInRequest)
                 }
             response.headers.get("Set-Cookie")
         }

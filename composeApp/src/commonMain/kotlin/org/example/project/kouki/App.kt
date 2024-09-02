@@ -48,7 +48,11 @@ fun App() {
                     flag = false
                 }
             } else {
-                LoginScreen(paddingValues) {
+                LoginScreen(paddingValues, onClickLogInButton = {
+                    GlobalScope.launch {
+                        api.logIn(it)
+                    }
+                }) {
                     flag = true
                 }
             }
