@@ -30,8 +30,9 @@ class WebSocketClient {
 
     @OptIn(DelicateCoroutinesApi::class)
     suspend fun connect() {
-        client.webSocket(host = "192.168.11.4", port = 8080, path = "/chat") {
-            session = client.webSocketSession(host = "192.168.11.4", port = 8080, path = "/chat")
+        client.webSocket(host = "192.168.11.4", port = 8080, path = "/we/chatRoom") {
+            session =
+                client.webSocketSession(host = "192.168.11.4", port = 8080, path = "/we/chatRoom")
             session?.let {
                 GlobalScope.launch {
                     try {
