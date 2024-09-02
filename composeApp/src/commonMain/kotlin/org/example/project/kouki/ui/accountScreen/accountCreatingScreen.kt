@@ -130,7 +130,16 @@ fun AccountCreatingScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            onClick = { onLogUpButton(CreateAccount(name, iconUrl, password, name)) }) {
+            onClick = {
+                onLogUpButton(
+                    CreateAccount(
+                        email = email,
+                        username = name,
+                        iconUrl = iconUrl,
+                        password = password
+                    )
+                )
+            }) {
             Text(text = "アカウント作成")
         }
         Button(
