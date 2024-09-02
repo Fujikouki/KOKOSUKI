@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    kotlin("plugin.serialization") version "1.9.20"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
 }
 
 kotlin {
@@ -33,16 +35,16 @@ kotlin {
     sourceSets {
         val desktopMain by getting
 
-        val ktor_version: String = "2.3.10"
-
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation("io.ktor:ktor-client-android:$ktor_version")
+            implementation(libs.ktor.client.android)
+            implementation(compose.material3)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
+            implementation(compose.material3)
             implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
@@ -50,30 +52,40 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             //Ktor
-            implementation("io.ktor:ktor-client-core:${ktor_version}")
-            implementation("io.ktor:ktor-client-json:${ktor_version}")
-            implementation("io.ktor:ktor-client-serialization:${ktor_version}")
-            implementation("io.ktor:ktor-client-logging:${ktor_version}")
-            implementation("io.ktor:ktor-client-content-negotiation:${ktor_version}")
-            implementation("io.ktor:ktor-client-websockets:${ktor_version}")
-            implementation("io.ktor:ktor-client-cio:${ktor_version}")
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.json)
+            implementation(libs.ktor.client.serialization)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.websockets)
+            implementation(libs.ktor.client.cio)
         }
         iosMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
+            implementation(compose.material3)
             implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation("io.ktor:ktor-client-ios:$ktor_version")
+            implementation(libs.ktor.client.ios)
         }
 
         desktopMain.dependencies {
+            implementation(compose.material3)
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
-            implementation("io.ktor:ktor-client-cio:$ktor_version")
+            implementation(libs.ktor.client.cio)
         }
     }
+}
+
+ktlint {
+    android.set(true)
+    outputColorName.set("RED")
+    verbose.set(true)
+    outputToConsole.set(true)
 }
 
 android {
