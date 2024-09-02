@@ -1,5 +1,6 @@
 package org.example.project.kouki.ui.accountScreen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,14 +36,16 @@ fun AccountCreatingScreen(
     var password by remember { mutableStateOf("") }
     var iconUrl by remember { mutableStateOf("") }
 
-
-
+    val focusManager = LocalFocusManager.current
 
     Column(
         modifier = Modifier
             .padding(paddingValues)
             .padding(top = 16.dp)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .clickable {
+                focusManager.clearFocus()
+            },
     ) {
         Text(
             modifier = Modifier
@@ -130,7 +134,16 @@ fun AccountCreatingScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            onClick = { onLogUpButton(CreateAccount(name, iconUrl, password, name)) }) {
+            onClick = {
+                onLogUpButton(
+                    CreateAccount(
+                        email = email,
+                        username = name,
+                        iconUrl = iconUrl,
+                        password = password
+                    )
+                )
+            }) {
             Text(text = "アカウント作成")
         }
         Button(

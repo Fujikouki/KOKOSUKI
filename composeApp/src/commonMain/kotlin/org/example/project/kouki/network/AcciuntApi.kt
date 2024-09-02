@@ -1,7 +1,6 @@
 package org.example.project.kouki.network
 
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.DEFAULT
@@ -14,6 +13,7 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.example.project.kouki.network.data.CreateAccount
+import org.example.project.kouki.network.data.Login
 
 
 class AccountApi {
@@ -37,17 +37,38 @@ class AccountApi {
             // 送信するデータの準備
             val userRequest = createAccount
             // POSTリクエストの送信
-            client.post("http://localhost:8080/account/create") {
+            //localhostの場合
+            val response =
+                client.post("http://192.168.11.4:8080/account/create") {
                 contentType(io.ktor.http.ContentType.Application.Json)
                 setBody(userRequest)
-            }.body<String>()
+                }
+            response.headers.get("Set-Cookie")
         }
         result.onSuccess { response ->
             println("Response: $response")
         }.onFailure { exception ->
             println("Error occurred: ${exception.message}")
-        }.also {
-            client.close()
+        }
+    }
+
+    suspend fun logIn(login: Login) {
+        val result = runCatching {
+            // 送信するデータの準備
+            val logInRequest = login
+            // POSTリクエストの送信
+            //localhostの場合
+            val response =
+                client.post("http://192.168.11.4:8080/account/login") {
+                    contentType(io.ktor.http.ContentType.Application.Json)
+                    setBody(logInRequest)
+                }
+            response.headers.get("Set-Cookie")
+        }
+        result.onSuccess { response ->
+            println("Response: $response")
+        }.onFailure { exception ->
+            println("Error occurred: ${exception.message}")
         }
     }
 }

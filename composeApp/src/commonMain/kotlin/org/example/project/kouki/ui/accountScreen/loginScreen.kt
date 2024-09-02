@@ -1,5 +1,6 @@
 package org.example.project.kouki.ui.accountScreen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -11,18 +12,37 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.example.project.kouki.network.data.Login
 
 @Composable
-fun LoginScreen(paddingValues: PaddingValues, onClick: () -> Unit) {
+fun LoginScreen(
+    paddingValues: PaddingValues,
+    onClickLogInButton: (Login) -> Unit,
+    onClick: () -> Unit
+) {
+
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = Modifier
             .padding(paddingValues)
             .padding(top = 16.dp)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .clickable {
+                focusManager.clearFocus()
+            },
     ) {
         Text(
             modifier = Modifier
@@ -46,8 +66,8 @@ fun LoginScreen(paddingValues: PaddingValues, onClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            value = "",
-            onValueChange = {},
+            value = email,
+            onValueChange = { email = it },
             label = { Text("メールアドレス") }
         )
 
@@ -65,8 +85,8 @@ fun LoginScreen(paddingValues: PaddingValues, onClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            value = "",
-            onValueChange = {},
+            value = password,
+            onValueChange = { password = it },
             label = { Text("パスワード") }
         )
 
@@ -76,7 +96,7 @@ fun LoginScreen(paddingValues: PaddingValues, onClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            onClick = { /*TODO*/ }) {
+            onClick = { onClickLogInButton(Login(email = email, password = password)) }) {
             Text(text = "ログイン")
         }
         Button(
