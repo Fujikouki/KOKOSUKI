@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     kotlin("plugin.serialization") version "1.9.20"
-    id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
 }
 
 kotlin {
@@ -81,12 +80,6 @@ kotlin {
     }
 }
 
-ktlint {
-    android.set(true)
-    outputColorName.set("RED")
-    verbose.set(true)
-    outputToConsole.set(true)
-}
 
 android {
     namespace = "org.example.project.kouki"
