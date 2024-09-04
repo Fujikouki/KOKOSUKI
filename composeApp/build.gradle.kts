@@ -39,6 +39,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.android)
             implementation(compose.material3)
+            implementation("io.insert-koin:koin-android:3.5.3")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -59,6 +60,11 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.websockets)
             implementation(libs.ktor.client.cio)
+
+            //viewModel
+            implementation(libs.lifecycle.viewmodel.compose)
+
+            implementation(libs.koin.core)
         }
         iosMain.dependencies {
             implementation(compose.runtime)
@@ -75,7 +81,6 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
-            implementation(libs.ktor.client.cio)
         }
     }
 }

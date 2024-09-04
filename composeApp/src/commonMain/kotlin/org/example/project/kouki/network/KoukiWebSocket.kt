@@ -15,8 +15,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import org.example.project.kouki.network.repository.ChatWebSocketRepository
 
-class WebSocketClient {
+class WebSocketClient : ChatWebSocketRepository {
 
     private val client = HttpClient(CIO) {
         install(WebSockets)
@@ -26,42 +27,53 @@ class WebSocketClient {
 
     // MutableSharedFlowを使って非同期でデータをストリーム化
     private val _messages = MutableSharedFlow<String>()
-    val messages = _messages.asSharedFlow()
+    override val messages = _messages.asSharedFlow()
 
     @OptIn(DelicateCoroutinesApi::class)
-    suspend fun connect() {
-        client.webSocket(host = "192.168.11.4", port = 8080, path = "/we/chatRoom") {
-            session =
-                client.webSocketSession(host = "192.168.11.4", port = 8080, path = "/we/chatRoom")
-            session?.let {
-                GlobalScope.launch {
-                    try {
-                        while (true) {
-                            val frame = it.incoming.receive()
-                            if (frame is Frame.Text) {
-                                _messages.emit(frame.readText())
+    override suspend fun connect(r: (String) -> Unit) {
+        try {
+            client.webSocket(host = "192.168.11.4", port = 8080, path = "/we/chatRoom") {
+                session =
+                    client.webSocketSession(
+                        host = "192.168.11.4",
+                        port = 8080,
+                        path = "/we/chatRoom"
+                    )
+                session?.let {
+                    GlobalScope.launch {
+                        try {
+                            while (true) {
+                                val frame = it.incoming.receive()
+                                if (frame is Frame.Text) {
+                                    r(frame.readText())
+                                    _messages.emit(frame.readText())
+                                }
                             }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        } finally {
+                            session?.close()
+                            it.close()
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    } finally {
-                        session?.close()
-                        it.close()
                     }
                 }
             }
-        }
-    }
-
-    suspend fun sendMessage(message: String) {
-        try {
-            session?.send(Frame.Text(message))
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    suspend fun close() {
+
+    override suspend fun sendMessage(message: String) {
+        try {
+            session?.send(Frame.Text(message))
+        } catch (e: Exception) {
+            println("★ sendMessage error: ${e.message}")
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun close() {
         session?.close()
         client.close()
     }

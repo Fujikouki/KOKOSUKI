@@ -29,7 +29,9 @@ fun MainScreen() {
     var webSocketMessage by remember { mutableStateOf(listOf("")) }
     val websocket = remember { WebSocketClient() }
     LaunchedEffect(key1 = Unit) {
-        websocket.connect()
+        websocket.connect(r = {
+            webSocketMessage += it
+        })
         websocket.messages.collect {
             webSocketMessage += it
         }

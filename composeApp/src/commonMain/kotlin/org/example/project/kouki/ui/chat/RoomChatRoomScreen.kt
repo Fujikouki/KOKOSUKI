@@ -16,50 +16,26 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.example.project.kouki.network.WebSocketClient
 
 @OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
 @Composable
-fun RoomChatRoomScreen() {
+fun RoomChatRoomScreen(
+    viewModel: ChatScreenViewModel = viewModel { ChatScreenViewModel() }
+) {
 
-    var sendMessage by remember { mutableStateOf("") }
 
-    val messageList = remember { mutableStateListOf<String>() }
+    val mssaageList by viewModel.messageList.collectAsState()
 
-    val webSocket = remember {
-        WebSocketClient()
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            GlobalScope.launch {
-                webSocket.close()
-            }
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        webSocket.connect()
-        // メッセージの収集を開始
-        launch {
-            webSocket.messages.collect { message ->
-                messageList.add(message)
-            }
-        }
-    }
+    val sendMessage by viewModel.sendMessage
 
     Scaffold(
         topBar = {
@@ -69,13 +45,13 @@ fun RoomChatRoomScreen() {
         bottomBar = {
             BottomAppBar(
                 actions = {
-                    TextField(value = sendMessage, onValueChange = { sendMessage = it })
+                    TextField(value = sendMessage, onValueChange = { viewModel.changeMessage(it) })
                 },
                 floatingActionButton = {
                     Button(onClick = {
                         println("sendMessage: $sendMessage")
                         GlobalScope.launch {
-                            webSocket.sendMessage(sendMessage)
+                            viewModel.sendMessage()
                         }
                     }
                     ) {
@@ -96,7 +72,7 @@ fun RoomChatRoomScreen() {
                     .fillMaxSize()
                     .padding(8.dp)
             ) {
-                items(messageList) { message ->
+                items(mssaageList) { message ->
                     ChatCard(message = message)
                 }
             }
