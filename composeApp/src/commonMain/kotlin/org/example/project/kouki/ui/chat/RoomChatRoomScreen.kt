@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -32,6 +33,13 @@ fun RoomChatRoomScreen(
     viewModel: ChatScreenViewModel = viewModel { ChatScreenViewModel() }
 ) {
 
+    DisposableEffect(viewModel) {
+        println("★ DisposableEffect")
+        viewModel.connect()
+        onDispose {
+            viewModel.close()
+        }
+    }
 
     val mssaageList by viewModel.messageList.collectAsState()
 

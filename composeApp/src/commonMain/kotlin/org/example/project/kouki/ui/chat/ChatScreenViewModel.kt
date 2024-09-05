@@ -13,18 +13,15 @@ class ChatScreenViewModel() : ViewModel(), KoinComponent {
 
     private val chatWebSocketRepository: ChatWebSocketRepository by inject()
 
-    init {
-        connect()
-    }
-
     var sendMessage = mutableStateOf("")
 
     val messageList = MutableStateFlow(listOf<String>())
 
 
     fun connect() {
+        println("★ ChatScreenViewModel#connect")
         viewModelScope.launch {
-            chatWebSocketRepository.connect() {
+            chatWebSocketRepository.connect {
                 messageList.value += it
             }
         }
