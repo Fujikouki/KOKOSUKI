@@ -10,9 +10,10 @@ import io.ktor.websocket.Frame
 import io.ktor.websocket.close
 import io.ktor.websocket.readReason
 import io.ktor.websocket.readText
+import org.example.project.kouki.database.repository.TokenSettingsRepository
 import org.example.project.kouki.network.repository.ChatWebSocketRepository
 
-class WebSocketClientUseCase : ChatWebSocketRepository {
+class WebSocketClientUseCase(val toke: TokenSettingsRepository) : ChatWebSocketRepository {
 
     private var client: HttpClient? = null
     private var session: DefaultClientWebSocketSession? = null
@@ -23,6 +24,8 @@ class WebSocketClientUseCase : ChatWebSocketRepository {
         receive: (String) -> Unit,
     ) {
         try {
+            val key = toke.getToken()
+            println("★ key: $key")
             client = HttpClient(CIO) {
                 install(WebSockets) {
                     pingInterval = 15_000

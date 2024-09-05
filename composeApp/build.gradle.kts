@@ -67,6 +67,10 @@ kotlin {
             implementation(libs.koin.core)
 
             implementation(libs.navigation.compose)
+
+            implementation("com.russhwolf:multiplatform-settings:1.2.0")
+            implementation("com.russhwolf:multiplatform-settings-no-arg:1.2.0")
+
         }
         iosMain.dependencies {
             implementation(compose.runtime)
