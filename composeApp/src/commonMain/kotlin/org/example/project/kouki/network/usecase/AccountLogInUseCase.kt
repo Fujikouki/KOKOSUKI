@@ -16,7 +16,7 @@ import org.example.project.kouki.database.repository.TokenSettingsRepository
 import org.example.project.kouki.network.data.Login
 import org.example.project.kouki.network.repository.AccountLogInRepository
 
-class AccountLogInUseCase(val toke: TokenSettingsRepository) : AccountLogInRepository {
+class AccountLogInUseCase(private val token: TokenSettingsRepository) : AccountLogInRepository {
 
     private val client = HttpClient(CIO) {
         install(ContentNegotiation) {
@@ -52,12 +52,14 @@ class AccountLogInUseCase(val toke: TokenSettingsRepository) : AccountLogInRepos
         result.onSuccess {
             val cookie = it.headers["Set-Cookie"]
             if (cookie != null) {
-                toke.saveToken(cookie)
+                token.saveToken(cookie)
                 onSuccess(cookie)
             } else {
+                token.deleteToken()
                 onError("Error occurred: Cookie is null")
             }
         }.onFailure { exception ->
+            token.deleteToken()
             onError("Error occurred: ${exception.message}")
         }
     }

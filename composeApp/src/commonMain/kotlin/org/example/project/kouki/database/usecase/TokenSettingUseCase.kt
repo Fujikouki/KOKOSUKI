@@ -15,4 +15,8 @@ class TokenSettingUseCase : TokenSettingsRepository {
         return tokenSettings.getString("token", "")
     }
 
+    override suspend fun deleteToken() {
+        tokenSettings.remove("token")
+    }
+
 }

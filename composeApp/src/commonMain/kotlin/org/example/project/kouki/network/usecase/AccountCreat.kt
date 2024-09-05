@@ -16,7 +16,7 @@ import org.example.project.kouki.database.repository.TokenSettingsRepository
 import org.example.project.kouki.network.data.CreateAccount
 import org.example.project.kouki.network.repository.AccountCreateRepository
 
-class AccountCreateUseCase(val token: TokenSettingsRepository) : AccountCreateRepository {
+class AccountCreateUseCase(private val token: TokenSettingsRepository) : AccountCreateRepository {
 
     private val client = HttpClient(CIO) {
         install(ContentNegotiation) {
