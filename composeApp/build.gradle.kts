@@ -125,6 +125,7 @@ android {
 dependencies {
     implementation(libs.androidx.media3.common)
     implementation(libs.firebase.database.ktx)
+    implementation(libs.androidx.material3.android)
 }
 
 compose.desktop {

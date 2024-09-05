@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -27,26 +28,19 @@ class ChatScreenViewModel() : ViewModel(), KoinComponent, ChatUiSateHolder {
     private val _messageList = MutableStateFlow(listOf<String>())
 
     override fun connect() {
-        // 初期状態をLoadingに設定
         uiSate = ChatUiState.Loading
         viewModelScope.launch {
-            withContext(kotlinx.coroutines.Dispatchers.IO) {
-                // WebSocket接続
+            withContext(Dispatchers.IO) {
                 chatWebSocketRepository.connect(
                     onConnect = {
-                        // 接続成功時、状態をSuccessに設定
                         uiSate = ChatUiState.Success(messageList = emptyList(), sendMassage = "")
                     },
                     onError = { throwable ->
-                        // エラー時にError状態に遷移
                         println("Error: ${throwable.message}")
                         uiSate = ChatUiState.Error(message = throwable.message ?: "Unknown error")
                     }
                 ) { message ->
-                    // メッセージを受信したらリストを更新
                     _messageList.value += message
-
-                    // 現在の状態がSuccessであるか確認し、成功状態を維持しつつメッセージリストを更新
                     val currentState = uiSate as? ChatUiState.Success
                     if (currentState != null) {
                         uiSate = currentState.copy(

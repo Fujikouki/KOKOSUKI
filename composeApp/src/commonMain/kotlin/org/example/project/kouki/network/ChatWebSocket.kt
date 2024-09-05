@@ -14,10 +14,7 @@ import org.example.project.kouki.network.repository.ChatWebSocketRepository
 
 class WebSocketClient : ChatWebSocketRepository {
 
-    private val client = HttpClient(CIO) {
-        install(WebSockets)
-    }
-
+    private var client: HttpClient? = null
     private var session: DefaultClientWebSocketSession? = null
 
     override suspend fun connect(
@@ -26,8 +23,11 @@ class WebSocketClient : ChatWebSocketRepository {
         receive: (String) -> Unit,
     ) {
         try {
+            client = HttpClient(CIO) {
+                install(WebSockets)
+            }
             session =
-                client.webSocketSession(host = "192.168.11.4", port = 8080, path = "/we/chatRoom")
+                client!!.webSocketSession(host = "192.168.11.4", port = 8080, path = "/we/chatRoom")
             session?.let {
                 onConnect()
                 for (message in it.incoming) {
@@ -64,10 +64,11 @@ class WebSocketClient : ChatWebSocketRepository {
         } catch (e: Exception) {
             println("★ connect error: ${e.message}")
             onError(e)
+            close()
         } finally {
             println("★ Session closed finally")
             onError(Exception("Session closed"))
-            session?.close()
+            close()
         }
     }
 
@@ -83,8 +84,12 @@ class WebSocketClient : ChatWebSocketRepository {
 
     override suspend fun close() {
         println("★ close")
-        session?.close()
-        client.close()
+        try {
+            session?.close()
+            client?.close()
+        } catch (e: Exception) {
+            println("★ close error: ${e.message}")
+            e.printStackTrace()
+        }
     }
-
 }
