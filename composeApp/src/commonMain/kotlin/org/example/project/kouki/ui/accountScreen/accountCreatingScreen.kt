@@ -1,6 +1,5 @@
 package org.example.project.kouki.ui.accountScreen
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -28,7 +27,8 @@ import org.example.project.kouki.network.data.CreateAccount
 fun AccountCreatingScreen(
     paddingValues: PaddingValues,
     onLogUpButton: (CreateAccount) -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onChatButton: () -> Unit,
 ) {
 
     var name by remember { mutableStateOf("") }
@@ -43,9 +43,6 @@ fun AccountCreatingScreen(
             .padding(paddingValues)
             .padding(top = 16.dp)
             .fillMaxSize()
-            .clickable {
-                focusManager.clearFocus()
-            },
     ) {
         Text(
             modifier = Modifier
@@ -152,6 +149,13 @@ fun AccountCreatingScreen(
                 .padding(8.dp),
             onClick = { onClick() }) {
             Text(text = "ログイン")
+        }
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            onClick = { onChatButton() }) {
+            Text(text = "チャット")
         }
 
     }

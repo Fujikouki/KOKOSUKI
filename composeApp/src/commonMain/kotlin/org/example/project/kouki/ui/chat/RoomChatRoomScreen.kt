@@ -9,12 +9,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -35,6 +39,7 @@ import org.example.project.kouki.ui.chat.uiSate.ChatUiState
 @OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
 @Composable
 fun RoomChatRoomScreen(
+    onNavigate: () -> Unit,
     sateHolder: ChatUiSateHolder = viewModel { ChatScreenViewModel() }
 ) {
     DisposableEffect(Unit) {
@@ -46,52 +51,110 @@ fun RoomChatRoomScreen(
 
     when (val state = sateHolder.uiSate) {
         is ChatUiState.Loading -> {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Loading",
-                    fontSize = 24.sp
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                CircularProgressIndicator()
-            }
-        }
-
-        is ChatUiState.Error -> {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Error",
-                    color = Color.Red,
-                    fontSize = 24.sp
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                CircularProgressIndicator()
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = { sateHolder.connect() }) {
-                    Text(text = "Retry")
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        navigationIcon = {
+                            IconButton(onClick = { onNavigate() }) {
+                                Icon(
+                                    Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                                    contentDescription = null
+                                )
+                            }
+                        },
+                        title = {
+                            Text(
+                                text = "チャット",
+                                fontSize = 24.sp
+                            )
+                        }
+                    )
+                }
+            ) { innerPadding ->
+                Column(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Loading",
+                        fontSize = 24.sp
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    CircularProgressIndicator()
                 }
             }
         }
+        is ChatUiState.Error -> {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        navigationIcon = {
+                            IconButton(onClick = { onNavigate() }) {
+                                Icon(
+                                    Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                                    contentDescription = null
+                                )
+                            }
+                        },
+                        title = {
+                            Text(
+                                text = "チャット",
+                                fontSize = 24.sp
+                            )
+                        }
+                    )
+                }
+            ) { paddingValues ->
+                Column(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Error",
+                        color = Color.Red,
+                        fontSize = 24.sp
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    CircularProgressIndicator()
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(onClick = { sateHolder.connect() }) {
+                        Text(text = "Retry")
+                    }
+                }
+            }
 
+        }
         is ChatUiState.Success -> {
             Scaffold(
                 topBar = {
                     TopAppBar(
-                        title = { Text(text = "Chat Room") }
+                        navigationIcon = {
+                            IconButton(onClick = { onNavigate() }) {
+                                Icon(
+                                    Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                                    contentDescription = null
+                                )
+                            }
+                        },
+                        title = {
+                            Text(
+                                text = "チャット",
+                                fontSize = 24.sp
+                            )
+                        }
                     )
                 },
                 bottomBar = {
                     BottomAppBar(
                         actions = {
                             TextField(
-                                value = state.sendMassage,  // ここでstateを使ってキャストを省略
+                                value = state.sendMassage,
                                 onValueChange = { sateHolder.changeMessage(it) }
                             )
                         },
