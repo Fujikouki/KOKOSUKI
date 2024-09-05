@@ -1,6 +1,5 @@
 package org.example.project.kouki.ui.accountScreen
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -44,9 +43,6 @@ fun AccountCreatingScreen(
             .padding(paddingValues)
             .padding(top = 16.dp)
             .fillMaxSize()
-            .clickable {
-                focusManager.clearFocus()
-            },
     ) {
         Text(
             modifier = Modifier

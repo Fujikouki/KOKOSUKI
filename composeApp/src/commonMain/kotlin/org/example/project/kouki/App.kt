@@ -1,6 +1,11 @@
 package org.example.project.kouki
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -9,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -31,47 +37,80 @@ fun App() {
     val navController = rememberNavController()
 
     MaterialTheme {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "KOKOSUKIアプリ",
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                    }
-                )
-            }
-        ) { paddingValues ->
             NavHost(
+                modifier = Modifier.fillMaxSize(),
                 navController = navController,
                 startDestination = Screen.LOGIN.name
             ) {
                 composable(route = Screen.LOGIN.name) {
-                    LoginScreen(paddingValues = paddingValues, onClickLogInButton = {
-                        GlobalScope.launch {
-                            api.logIn(it)
+                    Scaffold(
+                        topBar = {
+                            TopAppBar(
+                                navigationIcon = {
+                                    IconButton(onClick = { navController.popBackStack() }) {
+                                        Icon(
+                                            Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                                            contentDescription = null
+                                        )
+                                    }
+                                },
+                                title = {
+                                    Text(
+                                        text = "ログイン",
+                                        style = MaterialTheme.typography.titleLarge
+                                    )
+                                }
+                            )
                         }
-                    }) {
-                        navController.navigate(Screen.ACCOUNT_CREATING.name)
+                    ) { paddingValues ->
+                        LoginScreen(paddingValues = paddingValues, onClickLogInButton = {
+                            GlobalScope.launch {
+                                api.logIn(it)
+                            }
+                        }) {
+                            navController.navigate(Screen.ACCOUNT_CREATING.name)
+                        }
                     }
                 }
                 composable(route = Screen.ACCOUNT_CREATING.name) {
-                    AccountCreatingScreen(paddingValues = paddingValues, onLogUpButton = {
-                        GlobalScope.launch {
-                            api.createAccount(it)
+                    Scaffold(
+                        topBar = {
+                            TopAppBar(
+                                navigationIcon = {
+                                    IconButton(onClick = { navController.popBackStack() }) {
+                                        Icon(
+                                            Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                                            contentDescription = null
+                                        )
+                                    }
+                                },
+                                title = {
+                                    Text(
+                                        text = "アカウント作成",
+                                        style = MaterialTheme.typography.titleLarge
+                                    )
+                                }
+                            )
                         }
-                    }, onClick = {
-                        navController.navigate(Screen.LOGIN.name)
-                    }, onChatButton = {
-                        navController.navigate(Screen.CHAT.name)
-                    })
+                    ) { paddingValues ->
+                        AccountCreatingScreen(paddingValues = paddingValues, onLogUpButton = {
+                            GlobalScope.launch {
+                                api.createAccount(it)
+                            }
+                        }, onClick = {
+                            navController.navigate(Screen.LOGIN.name)
+                        }, onChatButton = {
+                            navController.navigate(Screen.CHAT.name)
+                        })
+                    }
                 }
                 composable(route = Screen.CHAT.name) {
-                    RoomChatRoomScreen(paddingValues)
+                    RoomChatRoomScreen(onNavigate = {
+                        navController.popBackStack()
+                    })
                 }
             }
-        }
+
     }
 }
 
