@@ -11,25 +11,22 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.example.project.kouki.network.data.Login
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun LoginScreen(
     paddingValues: PaddingValues,
-    onClickLogInButton: (Login) -> Unit,
-    onClick: () -> Unit
+    viewModel: AccountViewModel = viewModel { AccountViewModel() },
+    onClick: () -> Unit,
 ) {
 
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val uiState by viewModel.loginUiState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -59,8 +56,8 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            value = email,
-            onValueChange = { email = it },
+            value = uiState.email,
+            onValueChange = { viewModel.onLoginEmailChange(it) },
             label = { Text("メールアドレス") }
         )
 
@@ -78,8 +75,8 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            value = password,
-            onValueChange = { password = it },
+            value = uiState.password,
+            onValueChange = { viewModel.onLoginPasswordChange(it) },
             label = { Text("パスワード") }
         )
 
@@ -89,7 +86,7 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            onClick = { onClickLogInButton(Login(email = email, password = password)) }) {
+            onClick = { viewModel.logIn() }) {
             Text(text = "ログイン")
         }
         Button(

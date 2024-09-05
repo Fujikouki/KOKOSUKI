@@ -1,11 +1,14 @@
 package org.example.project.kouki.di
 
 
-import org.example.project.kouki.network.WebSocketClient
+import org.example.project.kouki.network.repository.AccountLogInRepository
 import org.example.project.kouki.network.repository.ChatWebSocketRepository
+import org.example.project.kouki.network.usecase.AccountLogInUseCase
+import org.example.project.kouki.network.usecase.WebSocketClientUseCase
 import org.koin.dsl.module
 
 
 val appModule = module {
-    single<ChatWebSocketRepository> { WebSocketClient() }
+    single<ChatWebSocketRepository> { WebSocketClientUseCase() }
+    single<AccountLogInRepository> { AccountLogInUseCase() }
 }

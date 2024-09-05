@@ -21,7 +21,7 @@ class ChatScreenViewModel() : ViewModel(), KoinComponent, ChatUiSateHolder {
     override var uiSate: ChatUiState by mutableStateOf(ChatUiState.Loading)
         private set
 
-    private val chatWebSocketRepository: ChatWebSocketRepository by inject()
+    private val chatWebSocket: ChatWebSocketRepository by inject()
 
     private var _sendMessage = mutableStateOf("")
 
@@ -31,7 +31,7 @@ class ChatScreenViewModel() : ViewModel(), KoinComponent, ChatUiSateHolder {
         uiSate = ChatUiState.Loading
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                chatWebSocketRepository.connect(
+                chatWebSocket.connect(
                     onConnect = {
                         uiSate = ChatUiState.Success(messageList = emptyList(), sendMassage = "")
                     },
@@ -55,7 +55,7 @@ class ChatScreenViewModel() : ViewModel(), KoinComponent, ChatUiSateHolder {
 
     override fun sendChatMessage() {
         viewModelScope.launch {
-            chatWebSocketRepository.sendMessage(_sendMessage.value)
+            chatWebSocket.sendMessage(_sendMessage.value)
         }
     }
 
@@ -66,7 +66,7 @@ class ChatScreenViewModel() : ViewModel(), KoinComponent, ChatUiSateHolder {
 
     override fun close() {
         viewModelScope.launch {
-            chatWebSocketRepository.close()
+            chatWebSocket.close()
         }
     }
 

@@ -63,11 +63,7 @@ fun App() {
                             )
                         }
                     ) { paddingValues ->
-                        LoginScreen(paddingValues = paddingValues, onClickLogInButton = {
-                            GlobalScope.launch {
-                                api.logIn(it)
-                            }
-                        }) {
+                        LoginScreen(paddingValues = paddingValues) {
                             navController.navigate(Screen.ACCOUNT_CREATING.name)
                         }
                     }

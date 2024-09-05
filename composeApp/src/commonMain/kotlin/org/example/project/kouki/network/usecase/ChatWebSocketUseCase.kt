@@ -1,4 +1,4 @@
-package org.example.project.kouki.network
+package org.example.project.kouki.network.usecase
 
 
 import io.ktor.client.HttpClient
@@ -12,7 +12,7 @@ import io.ktor.websocket.readReason
 import io.ktor.websocket.readText
 import org.example.project.kouki.network.repository.ChatWebSocketRepository
 
-class WebSocketClient : ChatWebSocketRepository {
+class WebSocketClientUseCase : ChatWebSocketRepository {
 
     private var client: HttpClient? = null
     private var session: DefaultClientWebSocketSession? = null
