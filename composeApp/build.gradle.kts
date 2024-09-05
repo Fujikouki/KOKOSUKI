@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     kotlin("plugin.serialization") version "1.9.20"
-    id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
 }
 
 kotlin {
@@ -40,6 +39,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.android)
             implementation(compose.material3)
+            implementation("io.insert-koin:koin-android:3.5.3")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -60,6 +60,11 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.websockets)
             implementation(libs.ktor.client.cio)
+
+            //viewModel
+            implementation(libs.lifecycle.viewmodel.compose)
+
+            implementation(libs.koin.core)
         }
         iosMain.dependencies {
             implementation(compose.runtime)
@@ -76,17 +81,10 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
-            implementation(libs.ktor.client.cio)
         }
     }
 }
 
-ktlint {
-    android.set(true)
-    outputColorName.set("RED")
-    verbose.set(true)
-    outputToConsole.set(true)
-}
 
 android {
     namespace = "org.example.project.kouki"
@@ -127,6 +125,7 @@ android {
 dependencies {
     implementation(libs.androidx.media3.common)
     implementation(libs.firebase.database.ktx)
+    implementation(libs.androidx.material3.android)
 }
 
 compose.desktop {
