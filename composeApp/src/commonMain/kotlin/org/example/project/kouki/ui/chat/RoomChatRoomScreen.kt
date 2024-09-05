@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.BottomAppBar
@@ -25,6 +26,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,7 +50,6 @@ fun RoomChatRoomScreen(
             sateHolder.close()
         }
     }
-
     when (val state = sateHolder.uiSate) {
         is ChatUiState.Loading -> {
             Scaffold(
@@ -166,12 +167,20 @@ fun RoomChatRoomScreen(
                     )
                 }
             ) { innerPadding ->
+                val listState = rememberLazyListState()
+                // メッセージリストが更新されるたびにリストの最後にスクロールする
+                LaunchedEffect(state.messageList.size) {
+                    if (state.messageList.isNotEmpty()) {
+                        listState.animateScrollToItem(state.messageList.size - 1)
+                    }
+                }
                 Column(
                     modifier = Modifier
                         .padding(innerPadding)
                         .fillMaxSize()
                 ) {
                     LazyColumn(
+                        state = listState,
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(8.dp)
