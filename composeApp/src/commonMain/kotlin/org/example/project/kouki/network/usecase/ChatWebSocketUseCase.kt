@@ -3,9 +3,11 @@ package org.example.project.kouki.network.usecase
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.webSocketSession
+import io.ktor.http.HttpHeaders
 import io.ktor.websocket.Frame
 import io.ktor.websocket.close
 import io.ktor.websocket.readReason
@@ -25,13 +27,14 @@ class WebSocketClientUseCase(val toke: TokenSettingsRepository) : ChatWebSocketR
     ) {
         try {
             val key = toke.getToken()
-            println("★ key: $key")
             client = HttpClient(CIO) {
                 install(WebSockets) {
                     pingInterval = 15_000
                     maxFrameSize = 10 * 1024 * 1024
                 }
-
+                defaultRequest {
+                    headers.append(HttpHeaders.Cookie, key)
+                }
             }
             session =
                 client!!.webSocketSession(host = "192.168.11.4", port = 8080, path = "/we/chatRoom")
