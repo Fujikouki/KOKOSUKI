@@ -24,7 +24,11 @@ class WebSocketClient : ChatWebSocketRepository {
     ) {
         try {
             client = HttpClient(CIO) {
-                install(WebSockets)
+                install(WebSockets) {
+                    pingInterval = 15_000
+                    maxFrameSize = 10 * 1024 * 1024
+                }
+
             }
             session =
                 client!!.webSocketSession(host = "192.168.11.4", port = 8080, path = "/we/chatRoom")
