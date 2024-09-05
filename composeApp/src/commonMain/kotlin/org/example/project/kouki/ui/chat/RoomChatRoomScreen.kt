@@ -1,5 +1,6 @@
 package org.example.project.kouki.ui.chat
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,74 +18,84 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import org.example.project.kouki.ui.chat.uiSate.ChatUiSateHolder
+import org.example.project.kouki.ui.chat.uiSate.ChatUiState
 
 @OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
 @Composable
 fun RoomChatRoomScreen(
-    viewModel: ChatScreenViewModel = viewModel { ChatScreenViewModel() }
+    sateHolder: ChatUiSateHolder = viewModel { ChatScreenViewModel() }
 ) {
-
-    DisposableEffect(viewModel) {
-        println("★ DisposableEffect")
-        viewModel.connect()
+    DisposableEffect(Unit) {
+        sateHolder.connect()
         onDispose {
-            viewModel.close()
+            sateHolder.close()
         }
     }
 
-    val mssaageList by viewModel.messageList.collectAsState()
+    when (val state = sateHolder.uiSate) {
+        is ChatUiState.Loading -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(text = "Loading")
+            }
+        }
 
-    val sendMessage by viewModel.sendMessage
+        is ChatUiState.Error -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(text = "Error")
+            }
+        }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = "Chat Room") })
-        },
-        bottomBar = {
-            BottomAppBar(
-                actions = {
-                    TextField(value = sendMessage, onValueChange = { viewModel.changeMessage(it) })
+        is ChatUiState.Success -> {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = { Text(text = "Chat Room") }
+                    )
                 },
-                floatingActionButton = {
-                    Button(onClick = {
-                        println("sendMessage: $sendMessage")
-                        GlobalScope.launch {
-                            viewModel.sendMessage()
+                bottomBar = {
+                    BottomAppBar(
+                        actions = {
+                            TextField(
+                                value = state.sendMassage,  // ここでstateを使ってキャストを省略
+                                onValueChange = { sateHolder.changeMessage(it) }
+                            )
+                        },
+                        floatingActionButton = {
+                            Button(onClick = { sateHolder.sendChatMessage() }) {
+                                Text(text = "送る")
+                            }
+                        }
+                    )
+                }
+            ) { innerPadding ->
+                Column(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
+                ) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(8.dp)
+                    ) {
+                        items(state.messageList) { message ->
+                            ChatCard(message = message)
                         }
                     }
-                    ) {
-                        Text(text = "送る")
-                    }
-                }
-            )
-        }
-    )
-    { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-        ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp)
-            ) {
-                items(mssaageList) { message ->
-                    ChatCard(message = message)
                 }
             }
-
         }
     }
 }
