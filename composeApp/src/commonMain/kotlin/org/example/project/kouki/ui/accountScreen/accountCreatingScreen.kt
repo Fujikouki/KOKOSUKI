@@ -11,32 +11,24 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.example.project.kouki.network.data.CreateAccount
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 @Composable
 fun AccountCreatingScreen(
     paddingValues: PaddingValues,
-    onLogUpButton: (CreateAccount) -> Unit,
-    onClick: () -> Unit,
     onChatButton: () -> Unit,
+    onLoginButton: () -> Unit,
+    viewModel: AccountCreateViewModel = viewModel { AccountCreateViewModel() },
 ) {
 
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var iconUrl by remember { mutableStateOf("") }
-
-    val focusManager = LocalFocusManager.current
+    val uiSate by viewModel.uiState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -66,8 +58,8 @@ fun AccountCreatingScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            value = name,
-            onValueChange = { name = it },
+            value = uiSate.userName,
+            onValueChange = { viewModel.onUserNameChange(it) },
             label = { Text("名前") }
         )
 
@@ -85,8 +77,8 @@ fun AccountCreatingScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            value = email,
-            onValueChange = { email = it },
+            value = uiSate.email,
+            onValueChange = { viewModel.onEmailChange(it) },
             label = { Text("メールアドレス") }
         )
 
@@ -102,8 +94,8 @@ fun AccountCreatingScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            value = password,
-            onValueChange = { password = it },
+            value = uiSate.password,
+            onValueChange = { viewModel.onPasswordChange(it) },
             label = { Text("パスワード") }
         )
 
@@ -119,8 +111,8 @@ fun AccountCreatingScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            value = iconUrl,
-            onValueChange = { iconUrl = it },
+            value = uiSate.iconUrl,
+            onValueChange = { viewModel.onIconUrlChange(it) },
             label = { Text("IconURL") }
         )
 
@@ -131,23 +123,14 @@ fun AccountCreatingScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            onClick = {
-                onLogUpButton(
-                    CreateAccount(
-                        email = email,
-                        username = name,
-                        iconUrl = iconUrl,
-                        password = password
-                    )
-                )
-            }) {
+            onClick = { viewModel.createAccount() }) {
             Text(text = "アカウント作成")
         }
         Button(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            onClick = { onClick() }) {
+            onClick = { onLoginButton() }) {
             Text(text = "ログイン")
         }
         Button(

@@ -10,7 +10,7 @@ import org.example.project.kouki.network.repository.AccountLogInRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class AccountViewModel() : ViewModel(), KoinComponent {
+class AccountLoginViewModel() : ViewModel(), KoinComponent {
 
     private val accountUseCase: AccountLogInRepository by inject()
 

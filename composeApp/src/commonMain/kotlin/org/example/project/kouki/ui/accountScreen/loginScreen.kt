@@ -22,7 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @Composable
 fun LoginScreen(
     paddingValues: PaddingValues,
-    viewModel: AccountViewModel = viewModel { AccountViewModel() },
+    viewModel: AccountLoginViewModel = viewModel { AccountLoginViewModel() },
     onClick: () -> Unit,
 ) {
 
