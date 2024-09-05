@@ -65,6 +65,8 @@ kotlin {
             implementation(libs.lifecycle.viewmodel.compose)
 
             implementation(libs.koin.core)
+
+            implementation(libs.navigation.compose)
         }
         iosMain.dependencies {
             implementation(compose.runtime)

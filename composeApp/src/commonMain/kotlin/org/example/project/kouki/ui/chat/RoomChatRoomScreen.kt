@@ -2,6 +2,7 @@ package org.example.project.kouki.ui.chat
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +19,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
@@ -35,6 +35,7 @@ import org.example.project.kouki.ui.chat.uiSate.ChatUiState
 @OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
 @Composable
 fun RoomChatRoomScreen(
+    paddingValues: PaddingValues,
     sateHolder: ChatUiSateHolder = viewModel { ChatScreenViewModel() }
 ) {
     DisposableEffect(Unit) {
@@ -47,7 +48,9 @@ fun RoomChatRoomScreen(
     when (val state = sateHolder.uiSate) {
         is ChatUiState.Loading -> {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -62,7 +65,9 @@ fun RoomChatRoomScreen(
 
         is ChatUiState.Error -> {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -79,14 +84,11 @@ fun RoomChatRoomScreen(
                 }
             }
         }
-
         is ChatUiState.Success -> {
             Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = { Text(text = "Chat Room") }
-                    )
-                },
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
                 bottomBar = {
                     BottomAppBar(
                         actions = {

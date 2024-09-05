@@ -28,7 +28,8 @@ import org.example.project.kouki.network.data.CreateAccount
 fun AccountCreatingScreen(
     paddingValues: PaddingValues,
     onLogUpButton: (CreateAccount) -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onChatButton: () -> Unit,
 ) {
 
     var name by remember { mutableStateOf("") }
@@ -152,6 +153,13 @@ fun AccountCreatingScreen(
                 .padding(8.dp),
             onClick = { onClick() }) {
             Text(text = "ログイン")
+        }
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            onClick = { onChatButton() }) {
+            Text(text = "チャット")
         }
 
     }
