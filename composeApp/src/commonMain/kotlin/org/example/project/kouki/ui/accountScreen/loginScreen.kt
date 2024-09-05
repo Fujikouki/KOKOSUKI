@@ -23,10 +23,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun LoginScreen(
     paddingValues: PaddingValues,
     viewModel: AccountLoginViewModel = viewModel { AccountLoginViewModel() },
+    movingToChat: () -> Unit,
     onClick: () -> Unit,
 ) {
 
     val uiState by viewModel.loginUiState.collectAsState()
+
+
 
     Column(
         modifier = Modifier
@@ -86,7 +89,13 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            onClick = { viewModel.logIn() }) {
+            onClick = {
+                viewModel.logIn(
+                    isSuccess = {
+                        movingToChat()
+                    }
+                )
+            }) {
             Text(text = "ログイン")
         }
         Button(

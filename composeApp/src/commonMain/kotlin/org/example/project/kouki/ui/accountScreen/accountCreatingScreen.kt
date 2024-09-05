@@ -23,7 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @Composable
 fun AccountCreatingScreen(
     paddingValues: PaddingValues,
-    onChatButton: () -> Unit,
+    movingToChat: () -> Unit,
     onLoginButton: () -> Unit,
     viewModel: AccountCreateViewModel = viewModel { AccountCreateViewModel() },
 ) {
@@ -123,7 +123,11 @@ fun AccountCreatingScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            onClick = { viewModel.createAccount() }) {
+            onClick = {
+                viewModel.createAccount(isSuccess = {
+                    movingToChat()
+                })
+            }) {
             Text(text = "アカウント作成")
         }
         Button(
@@ -132,13 +136,6 @@ fun AccountCreatingScreen(
                 .padding(8.dp),
             onClick = { onLoginButton() }) {
             Text(text = "ログイン")
-        }
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            onClick = { onChatButton() }) {
-            Text(text = "チャット")
         }
 
     }

@@ -35,7 +35,7 @@ class AccountCreateViewModel() : ViewModel(), KoinComponent {
         _uiSate.value = _uiSate.value.copy(iconUrl = iconUrl)
     }
 
-    fun createAccount() {
+    fun createAccount(isSuccess: () -> Unit) {
         viewModelScope.launch {
             accountCreateUseCase.createAccount(
                 account = CreateAccount(
@@ -46,6 +46,7 @@ class AccountCreateViewModel() : ViewModel(), KoinComponent {
                 ),
                 onSuccess = {
                     println("★ AccountCreateViewModel createAccount onSuccess: $it")
+                    isSuccess()
                 },
                 onError = {
                     println("★ AccountCreateViewModel createAccount onError: $it")

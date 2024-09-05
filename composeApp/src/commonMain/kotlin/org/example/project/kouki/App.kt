@@ -55,7 +55,9 @@ fun App() {
                         )
                     }
                 ) { paddingValues ->
-                    LoginScreen(paddingValues = paddingValues) {
+                    LoginScreen(paddingValues = paddingValues, movingToChat = {
+                        navController.navigate(Screen.CHAT.name)
+                    }) {
                         navController.navigate(Screen.ACCOUNT_CREATING.name)
                     }
                 }
@@ -83,7 +85,7 @@ fun App() {
                 ) { paddingValues ->
                     AccountCreatingScreen(
                         paddingValues = paddingValues,
-                        onChatButton = {
+                        movingToChat = {
                             navController.navigate(Screen.CHAT.name)
                         },
                         onLoginButton = {

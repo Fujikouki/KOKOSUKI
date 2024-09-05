@@ -26,7 +26,7 @@ class AccountLoginViewModel() : ViewModel(), KoinComponent {
         _loginUiState.value = _loginUiState.value.copy(password = password)
     }
 
-    fun logIn() {
+    fun logIn(isSuccess: () -> Unit) {
         viewModelScope.launch {
             accountUseCase.logIn(
                 login = Login(
@@ -35,6 +35,7 @@ class AccountLoginViewModel() : ViewModel(), KoinComponent {
                 ),
                 onSuccess = {
                     println("★ AccountViewModel logIn onSuccess: $it")
+                    isSuccess()
                 },
                 onError = {
                     println("★ AccountViewModel logIn onError: $it")
